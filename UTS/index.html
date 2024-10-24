@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GANDARIA HOTEL - Login</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: Garamond, sans-serif;
+        background-color: hsl(197, 48%, 76%);
+      }
+      .header {
+        background-color: #000080;
+        color: white;
+        padding: 35px;
+        text-align: center;
+        font-size: 35px;
+      }
+      .container {
+        width: 100%;
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      input[type="submit"] {
+        background-color: #888;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #555;
+      }
+      .error {
+        color: red;
+        font-size: 14px;
+      }
+      .hotel-image {
+        width: 100%;
+        height: auto;
+        margin-bottom: 20px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">GANDARIA HOTEL</div>
+    <div class="container">
+      <!-- Hotel image -->
+      <img src="hotel.jpg" alt="Hotel Image" class="hotel-image" />
+
+      <!-- Login form -->
+      <form
+        id="loginForm"
+        action="login.php"
+        method="POST"
+        onsubmit="return validateForm()"
+      >
+        <p>Please login to enter</p>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Username"
+        />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+        />
+        <div class="error" id="error-message"></div>
+        <input type="submit" value="LOGIN" />
+      </form>
+    </div>
+
+    <script>
+      function validateForm() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const errorMessage = document.getElementById("error-message");
+
+        errorMessage.textContent = "";
+
+        if (username === "" || password === "") {
+          errorMessage.textContent = "Must be filled";
+          return false;
+        }
+
+        if (password.length < 5) {
+          errorMessage.textContent = "Password is at least 5 characters";
+          return false;
+        }
+
+        const letterCheck = /[a-zA-Z]/.test(password);
+        const numberCheck = /\d/.test(password);
+        if (!letterCheck || !numberCheck) {
+          errorMessage.textContent =
+            "Password must consist of letters and numbers.";
+          return false;
+        }
+
+        return true;
+      }
+    </script>
+  </body>
+</html>
