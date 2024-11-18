@@ -22,28 +22,48 @@ $errorMessage = "";
 $successMessage = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $floor = $_POST['floor'];
+    $floor = (int)$_POST['floor'];  // Ensure floor is treated as an integer
     $roomType = $_POST['roomType'];
     $days = (int)$_POST['days'];
-    $discount = (int)$_POST['discount'];
+    $discountType = $_POST['discount'];
 
     // Validate inputs
-    if ($floor === "" || !isset($roomPrices[$roomType]) || $days <= 0) {
+    if ($floor === 0) {
+        $errorMessage = "Floor 0 is not available for booking.";
+    } elseif ($floor === "" || !isset($roomPrices[$roomType]) || $days <= 0) {
         $errorMessage = "Please fill out all fields correctly.";
     } else {
         // Calculate total price
         $basePrice = $roomPrices[$roomType];
         $totalPrice = $basePrice * $days;
 
+        // Add additional charge for floors above 5
+        if ($floor > 5) {
+            $totalPrice += 10000;  // Add 10000 Rupiah for floors above the 5th floor
+        }
+
+        // Set discount percentage based on discount type
+        $discountPercentage = 0;
+        if ($discountType === "Member") {
+            $discountPercentage = 0.1 * $totalPrice; // 10% discount for members
+        } elseif ($discountType === "Birthday") {
+            $discountPercentage = 50000; // Fixed 50,000 Rupiah discount for birthdays
+        }
+
         // Calculate total discount
-        $totalDiscount = ($discount > 0) ? ($totalPrice * ($discount / 100)) : 0;
+        $totalDiscount = $discountPercentage;
 
         // Calculate final payment
         $finalPayment = $totalPrice - $totalDiscount;
 
-        $successMessage = "Total price for $days day(s) in a $roomType room on floor $floor: Rp " . number_format($totalPrice, 0, ',', '.') . "<br>" .
-            "Total discount: Rp " . number_format($totalDiscount, 0, ',', '.') . "<br>" .
-            "Total payment after discount: Rp " . number_format($finalPayment, 0, ',', '.');
+        // Create a success message with a structured display
+        $successMessage = "
+            <div><strong>Total price for $days day(s) in a $roomType room on floor $floor:</strong><br> 
+            Rp " . number_format($totalPrice, 0, ',', '.') . "</div><br>
+            <div><strong>Discount type:</strong> $discountType</div>
+            <div><strong>Total discount:</strong> Rp " . number_format($totalDiscount, 0, ',', '.') . "</div>
+            <div><strong>Total payment after discount:</strong> Rp " . number_format($finalPayment, 0, ',', '.') . "</div>
+        ";
     }
 }
 ?>
@@ -157,22 +177,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="number" id="days" name="days" class="form-control" placeholder="Enter number of days" required min="1">
             </div>
             <div class="mb-3">
-                <label for="discount" class="form-label">Discount (%):</label>
-                <input type="number" id="discount" name="discount" class="form-control" placeholder="Enter discount percentage" min="0" max="100" value="0">
+                <label for="discount" class="form-label">Discount:</label>
+                <select id="discount" name="discount" class="form-select" required>
+                    <option value="None">None</option>
+                    <option value="Member">Member</option>
+                    <option value="Birthday">Birthday</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-primary">Check Price</button>
         </form>
 
         <!-- Display error or success messages -->
         <?php if ($errorMessage): ?>
-            <div class="error"><?= $errorMessage; ?></div>
+            <div class="error mt-3"><?= $errorMessage; ?></div>
         <?php elseif ($successMessage): ?>
-            <div class="success"><?= $successMessage; ?></div>
+            <div class="success mt-3"><?= $successMessage; ?></div>
         <?php endif; ?>
     </div>
 
     <footer>
-        @copyrightTegar
+        &copy; 2024 Gandaria Hotel
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

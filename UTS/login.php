@@ -2,7 +2,7 @@
 session_start();
 
 $valid_username = "admin";
-$valid_password = "pass123";
+$valid_password = "admin123";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];

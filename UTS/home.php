@@ -119,7 +119,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         </a>
     </div>
 
-    <div class="container profile-section content">
+    <div class="">
         <h2>Hotel Profile</h2>
         <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
